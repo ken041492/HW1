@@ -37,10 +37,33 @@ func main() {
 	server.GET("/students/:StudentId/courses", controller.GetCoursesByStudentId)       // 讀取Courses of Student
 	//Post /users
 	server.POST("/students", controller.CreateStudents)
+	// GET /product
+	server.GET("/product", controller.GetProduct) //
+	server.GET("/product/:ProductId", controller.GetProductById)
+	server.GET("/product/:ProductId/category", controller.GetCategoryByCategoryId)
 
+	// GET /customer
+	server.GET("/customer", controller.GetCustomer) //
+	server.GET("/customer/:CustomerId", controller.GetCustomerById)
+	server.GET("/customer/:CustomerId/order", controller.GetOrderByCustomerId) //
+	// Post /product
+
+	// GET /order
+	server.GET("/order", controller.GetOrder)
+	server.GET("/order/:OrderId", controller.GetOrderById)
+	server.GET("/order/:OrderId/item", controller.GetItemByOrderId)
+
+	// GET /item
+	server.GET("/item", controller.GetItem) //
+
+	server.POST("/product", controller.CreateProduct)
+	//Post /users
 	//put /users
 	server.PUT("/students/:StudentId", controller.UpdateStudentById)
+	//put /product
+	server.PUT("/product/:ProductId", controller.UpdateProductById)
 	//put /append courses to student
+
 	server.PUT("/students/:StudentId/courses/:CourseId", controller.StudentSelectCourse)
 	server.PUT("/students/:StudentId/courses/:CourseId/txmanually", controller.StudentSelectCourseTransactionManuallyExample)
 	server.PUT("/students/:StudentId/courses/:CourseId/txmanuallySP", controller.StudentSelectCourseTransactionManuallyWithSavePointExample)
