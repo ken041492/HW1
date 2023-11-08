@@ -97,9 +97,6 @@ type StudentWithAll struct {
 type ProductWithAll struct {
 	Product
 	Category *Category `json:"category,omitempty"`
-	Customer *Customer `json:"customer,omitempty"`
-	Order    *Order    `json:"order,omitempty"`
-	Item     *Item     `json:"item,omitempty"`
 }
 
 type CustomerWithAll struct {
@@ -465,7 +462,6 @@ func GetOrderByCustomerId(c *gin.Context) {
 	db.Preload(clause.Associations).Table("customer").Where("id = $1", c.Param("CustomerId")).Take(&customer)
 	var order *Order
 	db.Table("order").Where("customer_id = $1", customer.Id).Take(&order)
-	// db.Preload(clause.Associations).Table("order").Where("customerId = $1", customer.Id).Take(&order)
 	closeDB(db)
 	c.JSON(200, order)
 }
