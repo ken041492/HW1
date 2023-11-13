@@ -162,15 +162,30 @@ func CreateStudents(c *gin.Context) {
 	c.JSON(200, student)
 }
 
+func (Product) TableName() string {
+	return "product"
+}
+
+func (Customer) TableName() string {
+	return "customer"
+}
+
+func (Order) TableName() string {
+	return "order"
+}
+
+func (Item) TableName() string {
+	return "item"
+}
+
 func CreateProduct(c *gin.Context) {
 	db := connectDB()
 	var product *Product
 	c.BindJSON(&product)
 
-	result := db.Create(&product)
+	result := db.Table("product").Create(&product)
 	if result.Error != nil {
 		log.Println(result.Error)
-
 		c.JSON(500, gin.H{
 			"message": "Create product failed with error: " + result.Error.Error(),
 		})
@@ -187,10 +202,9 @@ func CreateCustomer(c *gin.Context) {
 	var customer *Customer
 	c.BindJSON(&customer)
 
-	result := db.Create(&customer)
+	result := db.Table("customer").Create(&customer)
 	if result.Error != nil {
 		log.Println(result.Error)
-
 		c.JSON(500, gin.H{
 			"message": "Create customer failed with error: " + result.Error.Error(),
 		})
@@ -207,10 +221,9 @@ func CreateOrder(c *gin.Context) {
 	var order *Order
 	c.BindJSON(&order)
 
-	result := db.Create(&order)
+	result := db.Table("order").Create(&order)
 	if result.Error != nil {
 		log.Println(result.Error)
-
 		c.JSON(500, gin.H{
 			"message": "Create order failed with error: " + result.Error.Error(),
 		})
@@ -295,6 +308,79 @@ func UpdateProductById(c *gin.Context) {
 		"message": "Update product Susseccfully",
 	})
 }
+func UpdateOrderByOrderId(c *gin.Context) {
+	db := connectDB()
+	var order *Order
+
+	queryResult := db.Where("id = $1", c.Param("OrderId")).Take(&order)
+	if queryResult.Error != nil {
+		log.Println(queryResult.Error)
+		c.JSON(500, gin.H{
+			"message": "Update order failed with error: " + queryResult.Error.Error(),
+		})
+		closeDB(db)
+		return
+	}
+	var orderBody *Order
+
+	c.BindJSON(&orderBody)
+	orderBody.Id = order.Id
+
+	result := db.Model(&order).Where("id = ?", order.Id).Updates(orderBody)
+
+	if result.Error != nil {
+		log.Println(result.Error)
+
+		c.JSON(500, gin.H{
+			"message": "Update order failed with error: " + result.Error.Error(),
+		})
+
+		closeDB(db)
+		return
+	}
+
+	closeDB(db)
+	c.JSON(200, gin.H{
+		"message": "Update order Susseccfully",
+	})
+}
+
+func UpdateItemByItemId(c *gin.Context) {
+	db := connectDB()
+	var item *Item
+
+	queryResult := db.Where("id = $1", c.Param("ItemId")).Take(&item)
+	if queryResult.Error != nil {
+		log.Println(queryResult.Error)
+		c.JSON(500, gin.H{
+			"message": "Update item failed with error: " + queryResult.Error.Error(),
+		})
+		closeDB(db)
+		return
+	}
+	var itemBody *Item
+
+	c.BindJSON(&itemBody)
+	itemBody.Id = item.Id
+
+	result := db.Model(&item).Where("id = ?", item.Id).Updates(itemBody)
+
+	if result.Error != nil {
+		log.Println(result.Error)
+
+		c.JSON(500, gin.H{
+			"message": "Update item failed with error: " + result.Error.Error(),
+		})
+
+		closeDB(db)
+		return
+	}
+
+	closeDB(db)
+	c.JSON(200, gin.H{
+		"message": "Update order Susseccfully",
+	})
+}
 
 func DeleteStudentById(c *gin.Context) {
 	db := connectDB()
@@ -328,6 +414,40 @@ func DeleteStudentById(c *gin.Context) {
 		"message": "Delete students Susseccfully",
 	})
 }
+
+func DeleteProductById(c *gin.Context) {
+	db := connectDB()
+	var product *Product
+
+	queryResult := db.Table("product").Where("id = $1", c.Param("ProductId")).Take(&product)
+	if queryResult.Error != nil {
+		log.Println(queryResult.Error)
+		c.JSON(500, gin.H{
+			"message": "Delete product failed with error: " + queryResult.Error.Error(),
+		})
+		closeDB(db)
+		return
+	}
+
+	result := db.Delete(&product)
+
+	if result.Error != nil {
+		log.Println(result.Error)
+
+		c.JSON(500, gin.H{
+			"message": "Delete product failed with error: " + result.Error.Error(),
+		})
+
+		closeDB(db)
+		return
+	}
+
+	closeDB(db)
+	c.JSON(200, gin.H{
+		"message": "Delete products Susseccfully",
+	})
+}
+
 func GetStudents(c *gin.Context) {
 	lastName := c.Query("last_name")
 	firstName := c.Query("first_name")

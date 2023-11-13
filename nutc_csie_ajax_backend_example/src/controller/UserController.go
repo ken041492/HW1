@@ -11,6 +11,9 @@ import (
 )
 
 func GetUser() string {
+	var temp string = "Hello, "
+	log.Println("GetUser() is call")
+	log.Println(temp)
 	return envconfig.GetEnv("NAME")
 }
 

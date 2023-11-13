@@ -47,16 +47,24 @@ func main() {
 	server.GET("/customer/:CustomerId", controller.GetCustomerById)
 	server.GET("/customer/:CustomerId/order", controller.GetOrderByCustomerId) //
 	// Post /product
+	server.POST("/product", controller.CreateProduct)
+	// Post /customer
+	server.POST("/customer", controller.CreateCustomer)
+	// Post /order
+	server.POST("/order", controller.CreateOrder)
 
 	// GET /order
 	server.GET("/order", controller.GetOrder)
 	server.GET("/order/:OrderId", controller.GetOrderById)
 	server.GET("/order/:OrderId/item", controller.GetItemByOrderId)
 
+	// Put /order
+	server.PUT("/order/:OrderId", controller.UpdateOrderByOrderId)
+	// Put /item
+	server.PUT("/item/:ItemId", controller.UpdateItemByItemId)
 	// GET /item
 	server.GET("/item", controller.GetItem) //
 
-	server.POST("/product", controller.CreateProduct)
 	//Post /users
 	//put /users
 	server.PUT("/students/:StudentId", controller.UpdateStudentById)
@@ -70,6 +78,9 @@ func main() {
 
 	//delete /users
 	server.DELETE("/students/:StudentId", controller.DeleteStudentById)
+
+	//delete /product
+	server.DELETE("/product/:ProductId", controller.DeleteProductById)
 
 	//GET /departments
 	server.GET("/departments", controller.GetDepartments)                                   // 讀取Departments
