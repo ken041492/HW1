@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import { Card, Container, Row, Col } from 'react-bootstrap';
 import TextField from '@mui/material/TextField';
-// import Button from 'react-bootstrap/Button';
+
+import ProductCard from './ProductCard';
+
+import AddProductModal from './ProductAddModal';
+
+import AddOrderModal from './OrderAddModal';
 
 function App() {
   const [data, setData] = useState({
@@ -11,6 +16,7 @@ function App() {
     items: [],
     customers: [],
   });
+
 
   const [filteredData, setFilteredData] = useState([]);
   const [filterName, setFilterName] = useState("");
@@ -45,54 +51,38 @@ function App() {
   const fetchData = async () => {
     try {
       // 获取产品数据
-    const productResult = await fetch('http://localhost:8080/product');
-    const productData = await productResult.json();
+      const productResult = await fetch('http://localhost:8080/product');
+      const productData = await productResult.json();
 
-    // 获取其他 API 数据
-    const orderResult = await fetch('http://localhost:8080/order');
-    const orderData = await orderResult.json();
+      // 获取其他 API 数据
+      const orderResult = await fetch('http://localhost:8080/order');
+      const orderData = await orderResult.json();
 
-    const itemResult = await fetch('http://localhost:8080/item');
-    const itemData = await itemResult.json();
+      const itemResult = await fetch('http://localhost:8080/item');
+      const itemData = await itemResult.json();
 
-    const customerResult = await fetch('http://localhost:8080/customer');
-    const customerData = await customerResult.json();
+      const customerResult = await fetch('http://localhost:8080/customer');
+      const customerData = await customerResult.json();
 
-    console.log(orderData);
-    // 设置数据到 state 中
-    setData({
-      products: productData,
-      orders: orderData,
-      items: itemData,
-      customers: customerData,
-      // 添加其他 API 数据的属性...
-    });
+      console.log(orderData);
+      // 设置数据到 state 中
+      setData({
+        products: productData,
+        orders: orderData,
+        items: itemData,
+        customers: customerData,
+        // 添加其他 API 数据的属性...
+      });
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
-
-  const ProductCard = ({ product }) => (
-    <Col md={4} className="mb-4">
-      <Card>
-        <Card.Body>
-          <Card.Title><strong>{product.name}</strong></Card.Title>
-          <Card.Text>
-            <strong>ID:</strong> {product.id}<br />
-            <strong>Price:</strong> ${product.price}<br />
-            <strong>Category ID:</strong> {product.category_id}
-          </Card.Text>
-        </Card.Body>
-      </Card>
-    </Col>
-  );
-
   const ProductList = ({ data }) => (
     <Container className="border p-4">
       <Row>
         {data.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product.id} product={product} fetchData={fetchData}/>
         ))}
       </Row>
     </Container>
@@ -101,6 +91,7 @@ function App() {
   const OrderListContainer = ({ data }) => (
     <div>
       <h1>訂單列表</h1>
+      <AddOrderModal/>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -148,10 +139,10 @@ function App() {
     </div>
   );
 
-
   return (
     <div style={{ textAlign: 'center', marginTop: '20px' }}>
       <h1>商品列表</h1>
+      <AddProductModal/>
       <ProductList data={data.products} />
       <OrderListContainer data={data.orders} />
       <TextField
