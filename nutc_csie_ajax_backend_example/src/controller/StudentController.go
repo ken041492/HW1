@@ -142,6 +142,10 @@ func (StudentCourseSelection) TableName() string {
 	return "student_course"
 }
 
+func (Student) TableName() string {
+	return "students"
+}
+
 func CreateStudents(c *gin.Context) {
 	db := connectDB()
 	var student *Student
@@ -276,7 +280,7 @@ func UpdateProductById(c *gin.Context) {
 	db := connectDB()
 	var product *Product
 
-	queryResult := db.Where("id = $1", c.Param("Category_id")).Take(&product)
+	queryResult := db.Where("id = $1", c.Param("ProductId")).Take(&product)
 	if queryResult.Error != nil {
 		log.Println(queryResult.Error)
 		c.JSON(500, gin.H{
@@ -630,7 +634,6 @@ func GetProductById(c *gin.Context) {
 }
 
 func GetCustomerById(c *gin.Context) {
-
 	db := connectDB()
 	var customer *Customer
 	queryResult := db.Preload(clause.Associations).Table("customer").Where("id = $1", c.Param("CustomerId")).Take(&customer)
